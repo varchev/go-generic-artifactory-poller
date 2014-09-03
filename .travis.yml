@@ -2,14 +2,11 @@ language: java
 before_install: ant init-ivy
 script: ant all
 jdk:
-  - openjdk6
+- openjdk6
 deploy:
   provider: releases
   api_key:
-    secure: MTDbe0B4Kw9+ebJaQ2bSN9rzd30M3O7X2badZm99Dpf2l5f8eey17frpAiGSknsgFqJ2KUVYqxk7pH6UW7z+GFkmpVkRkslfR7pPM3iG5poybRLz16tlr+FsAfG0u4rh0hfPSDw2G5qgjZL8Fn5SRNHIBCHbw8lLW11VMB1MAhE=
+    secure: BbFdY+H/HadvKB15SOnjnfYLGlbqSaW0tHlYW5hjtBUoQFpOVe57IneVwIi8tom/LSADYKjyFuja8KabVSzHoCbXRevbCgFI84rfb8bLejuoCauIJE/Zwah5b4a3IgW04Q+xxgNPeozS/Dol+IC+C3Xlnb5IXe+VNodTfY3ZmDA=
   file: dist/go-generic-artifactory-poller.jar
-  skip_cleanup: true
   on:
     repo: varchev/go-generic-artifactory-poller
-    tags: true
-    all_branches: true
