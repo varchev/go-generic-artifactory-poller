@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<go-plugin id="generic-artifactory" version="1">
+<about>
+    <name>Generic Artifactory poller plugin</name>
+    <version>0.1.0</version>
+    <target-go-version>14.1</target-go-version>
+    <description>Plugin that polls an Artifactory repository</description>
+    <vendor>
+        <name>Deyan Varchev</name>
+        <url>http://some_url/to/repository/README.md</url>
+    </vendor>
+</about>
+</go-plugin>
+

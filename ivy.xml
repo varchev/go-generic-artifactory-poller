@@ -1,0 +1,16 @@
+<ivy-module version="2.0">
+    <info organisation="com.thoughtworks.go" module="plugin-util"/>
+    <dependencies>
+        <dependency org="org.apache.commons" name="commons-lang3" rev="3.1"/>
+        <dependency org="commons-logging" name="commons-logging" rev="1.1.3"/>
+        <dependency org="commons-io" name="commons-io" rev="2.4"/>
+        <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.2.5"/>
+        <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.2.4"/>
+        <dependency org="junit" name="junit" rev="4.11"/>
+        <dependency org="org.json" name="json" rev="20140107"/>
+        <dependency org="org.mockito" name="mockito-all" rev="1.9.5"/>
+        <dependency org="com.thoughtworks" name="go-plugin-api" rev="current">
+            <artifact name="go-plugin-api" url="http://www.thoughtworks.com/products/docs/go/current/help/resources/go-plugin-api-current.jar"/>
+        </dependency>
+    </dependencies>
+</ivy-module>
