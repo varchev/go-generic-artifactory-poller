@@ -8,5 +8,8 @@ deploy:
   api_key:
     secure: BbFdY+H/HadvKB15SOnjnfYLGlbqSaW0tHlYW5hjtBUoQFpOVe57IneVwIi8tom/LSADYKjyFuja8KabVSzHoCbXRevbCgFI84rfb8bLejuoCauIJE/Zwah5b4a3IgW04Q+xxgNPeozS/Dol+IC+C3Xlnb5IXe+VNodTfY3ZmDA=
   file: dist/go-generic-artifactory-poller.jar
+  skip_cleanup: true
   on:
     repo: varchev/go-generic-artifactory-poller
+    tags: true
+    all_branches: true
