@@ -9,7 +9,7 @@
         <dependency org="junit" name="junit" rev="4.11"/>
         <dependency org="org.json" name="json" rev="20140107"/>
         <dependency org="org.mockito" name="mockito-all" rev="1.9.5"/> 
-        <dependency org="cd.go.plugin" name="go-plugin-api" rev="14.4.0"/>
-    
+        <dependency org="cd.go.plugin" name="go-plugin-api" rev="16.12.0"/>
+        <dependency org="cd.go.plugin" name="gocd-package-material-plugin-shim" rev="16.12.0"/>
     </dependencies>
 </ivy-module>
