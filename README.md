@@ -1,20 +1,20 @@
-#Go Generic Artifactory Registry Poller
+# GoCD Generic Artifactory Registry Poller
 
-A [Go](http://www.go.cd) plugin that polls a Artifactory repository
+A [GoCD](https://www.go.cd) plugin that polls a Artifactory repository
 
 [![Build Status](https://travis-ci.org/varchev/go-generic-artifactory-poller.svg?branch=master)](https://travis-ci.org/varchev/go-generic-artifactory-poller)
 
 Introduction
 ------------
-This is a [package material](http://www.thoughtworks.com/products/docs/go/current/help/package_material.html) plugin for [Go](http://www.go.cd). It is currently capable of polling [Artifactory](http://www.jfrog.com/artifactory/) repositories.
+This is a [package material](https://docs.go.cd/current/extension_points/package_repository_extension.html) plugin for [GoCD](https://www.go.cd). It is currently capable of polling [Artifactory](https://www.jfrog.com/artifactory/) repositories.
 
-The behaviour and capabilities of the plugin are determined to a significant extent by that of the package material extension point in Go. Be sure to read the package material documentation before using this plugin.
+The behaviour and capabilities of the plugin are determined to a significant extent by that of the package material extension point in GoCD. Be sure to read the package material documentation before using this plugin.
 
-This plugin polls artifactory repositories using its [REST API](http://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API). It relies on the convention that version number is part of the file path.
+This plugin polls artifactory repositories using its [REST API](https://www.jfrog.com/confluence/display/RTF/Artifactory+REST+API). It relies on the convention that version number is part of the file path.
 
 Installation
 ------------
-Just drop [go-generic-artifactory-poller.jar](https://github.com/varchev/go-generic-artifactory-poller/releases) into plugins/external directory and restart Go. More details [here](http://www.thoughtworks.com/products/docs/go/current/help/plugin_user_guide.html)
+Just drop [go-generic-artifactory-poller.jar](https://github.com/varchev/go-generic-artifactory-poller/releases) into plugins/external directory and restart GoCD. More details [here](https://docs.go.cd/current/extension_points/plugin_user_guide.html)
 
 Repository definition
 ---------------------
