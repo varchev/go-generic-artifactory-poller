@@ -12,7 +12,7 @@ jdk:
 deploy:
   provider: releases
   api_key:
-    secure: BbFdY+H/HadvKB15SOnjnfYLGlbqSaW0tHlYW5hjtBUoQFpOVe57IneVwIi8tom/LSADYKjyFuja8KabVSzHoCbXRevbCgFI84rfb8bLejuoCauIJE/Zwah5b4a3IgW04Q+xxgNPeozS/Dol+IC+C3Xlnb5IXe+VNodTfY3ZmDA=
+    secure: G28DY2H96vg0QHNyy5YNFGcajCKiLumhZYRaeDk3yr4TOHUgWoixnCz9W1Z5GR0jhv1/Wgul9o3LDPl437B6Mc0IVruX5pbJLEnGTAuwuZdRGXkSp9uh9X3FKy1OWM9A/pxGAvi8ub5XS3MZKbMWm2HHW8d22vOoHUKdLgLxIfg=
   file: dist/go-generic-artifactory-poller.jar
   skip_cleanup: true
   on:
