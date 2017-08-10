@@ -10,6 +10,7 @@ import com.thoughtworks.go.plugin.api.response.validation.ValidationError;
 import com.thoughtworks.go.plugin.api.response.validation.ValidationResult;
 import net.varchev.go.plugin.genericArtifactory.GenericArtifactoryFeedDocument;
 import net.varchev.go.plugin.genericArtifactory.GenericArtifactoryParams;
+import net.varchev.go.plugin.genericArtifactory.GenericArtifactoryUtils;
 import net.varchev.go.plugin.genericArtifactory.config.GenericArtifactoryPackageConfig;
 import net.varchev.go.plugin.genericArtifactory.config.GenericArtifactoryRepoConfig;
 import com.tw.go.plugin.util.Credentials;
@@ -19,6 +20,12 @@ import org.json.JSONObject;
 
 public class GenericArtifactoryPoller implements PackageMaterialPoller {
     private static Logger LOGGER = Logger.getLoggerFor(GenericArtifactoryPoller.class);
+
+    private final GenericArtifactoryUtils utils;
+
+    public GenericArtifactoryPoller() {
+        utils = new GenericArtifactoryUtils();
+    }
 
     public PackageRevision getLatestRevision(PackageConfiguration packageConfig, RepositoryConfiguration repoConfig) {
         LOGGER.info(String.format("getLatestRevision called with packageName %s, for repo: %s",
@@ -128,7 +135,7 @@ public class GenericArtifactoryPoller implements PackageMaterialPoller {
         String url = params.getQuery();
         LOGGER.info(String.format("params received: %s", params.toString()));
 
-        GenericArtifactoryFeedDocument artifactoryFeedDocument = new GenericArtifactoryFeedDocument(url, params);
+        GenericArtifactoryFeedDocument artifactoryFeedDocument = new GenericArtifactoryFeedDocument(url, params, utils);
         PackageRevision packageRevision = artifactoryFeedDocument.getPackageRevision(params.isLastVersionKnown());
         if(packageRevision != null && params.getRepoUrl().getCredentials().provided())
         {

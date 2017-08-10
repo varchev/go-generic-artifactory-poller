@@ -1,0 +1,21 @@
+{
+  "repo" : "repo-id",
+  "path" : "/Path/To/Artifact",
+  "created" : "2016-09-13T12:09:31.472+03:00",
+  "createdBy" : "userName",
+  "lastModified" : "2016-09-13T12:29:51.341+03:00",
+  "modifiedBy" : "userName",
+  "lastUpdated" : "2016-09-13T12:29:51.341+03:00",
+  "downloadUri" : "https://artifactory.example.com/artifactory/storage/repo-id/Path/To/Artifact/Artifact.1.8.26.1.zip",
+  "mimeType" : "application/zip",
+  "size" : "394127082",
+  "checksums" : {
+    "sha1" : "526069b96abefa71cb243de2c5180db1621a1e8e",
+    "md5" : "1442339d95be0311b9146ea3d67d09f7"
+  },
+  "originalChecksums" : {
+    "sha1" : "526069b96abefa71cb243de2c5180db1621a1e8e",
+    "md5" : "1442339d95be0311b9146ea3d67d09f7"
+  },
+  "uri" : "https://artifactory.example.com/artifactory/api/storage/repo-id/Path/To/Artifact/Artifact.1.8.26.1.zip"
+}

@@ -2,24 +2,22 @@ package net.varchev.go.plugin.genericArtifactory;
 
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.material.packagerepository.PackageRevision;
-import com.tw.go.plugin.util.HttpRepoURL;
 import maven.Version;
 import net.varchev.go.plugin.genericArtifactory.config.GenericArtifactoryPackageConfig;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.CoreConnectionPNames;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 
 public class GenericArtifactoryFeedDocument {
 
     private static Logger LOGGER = Logger.getLoggerFor(GenericArtifactoryFeedDocument.class);
     private final JSONObject feedObject;
+    private final GenericArtifactoryUtils utils;
     private String packageId;
     private Version lowerBoundVersion;
     private Version upperBoundVersion;
@@ -29,18 +27,29 @@ public class GenericArtifactoryFeedDocument {
     private ArrayList<Version> versionsList;
     private GenericArtifactoryParams params;
 
+    public GenericArtifactoryFeedDocument(String url, GenericArtifactoryParams params, GenericArtifactoryUtils utils) {
+        if(utils == null) {
+            throw new InvalidParameterException(String.format("%s utils should not be null.", GenericArtifactoryUtils.class.getName()));
+        }
+        if(params == null) {
+            throw new InvalidParameterException(String.format("%s params should not be null.", GenericArtifactoryParams.class.getName()));
+        }
+        if(url == null || url.trim().length() == 0) {
+            throw new InvalidParameterException("URL should not null or empty");
+        }
 
-    public GenericArtifactoryFeedDocument(JSONObject feedObject, GenericArtifactoryParams params) {
-        this.feedObject = feedObject;
-        if(params.getPollVersionFrom() != null) {
+        this.utils = utils;
+        feedObject = utils.getJsonObject(url);
+
+        if (params.getPollVersionFrom() != null) {
             this.lowerBoundVersion = new Version(params.getPollVersionFrom());
         }
 
-        if(params.getPollVersionTo() != null) {
+        if (params.getPollVersionTo() != null) {
             this.upperBoundVersion = new Version(params.getPollVersionTo());
         }
 
-        if(params.getLastKnownVersion() != null) {
+        if (params.getLastKnownVersion() != null) {
             String versionString = params.getLastKnownVersion();
             this.lastKnownVersion = new Version(versionString);
         }
@@ -48,44 +57,6 @@ public class GenericArtifactoryFeedDocument {
         this.packageId = params.getPackageId();
         this.params = params;
         populateVersionsList();
-    }
-
-    public GenericArtifactoryFeedDocument(String url, GenericArtifactoryParams params) {
-        this(getJsonObject(url), params);
-    }
-
-    private static JSONObject getJsonObject(String url) {
-        DefaultHttpClient client = HttpRepoURL.getHttpClient();
-        HttpGet method = new HttpGet(url);
-        method.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10 * 1000);
-        try {
-            HttpResponse response = client.execute(method);
-            if(response.getStatusLine().getStatusCode() == 404) {
-                throw new GenericArtifactoryException("No such package found");
-            }
-            else if(response.getStatusLine().getStatusCode() != 200){
-                throw new RuntimeException(String.format("HTTP %s, %s",
-                        response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase()));
-            }
-
-            HttpEntity entity = response.getEntity();
-            String responseBody = EntityUtils.toString(entity);
-
-            LOGGER.info(responseBody);
-
-            JSONObject result = new JSONObject(responseBody);
-
-            return result;
-        } catch (GenericArtifactoryException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            String message = String.format("%s (%s) while getting package feed for : %s ", ex.getClass().getSimpleName(), ex.getMessage(), url);
-            LOGGER.error(message);
-            throw new RuntimeException(message, ex);
-        } finally {
-            method.releaseConnection();
-            client.getConnectionManager().shutdown();
-        }
     }
 
     private String getPackageLocation() {
@@ -109,53 +80,48 @@ public class GenericArtifactoryFeedDocument {
         return versionJSONObjectMap.get(version);
     }
 
-    private Date getVersionModifiedDate(){
-
-        String time = feedObject.getString("lastUpdated");
-
-        return javax.xml.bind.DatatypeConverter.parseDateTime(time).getTime();
-    }
-
     private Date getPublishedDate() {
-        return getVersionModifiedDate();
+        StringBuilder lastItem = new StringBuilder();
+        String packageUri = getVersionDetails(getLatestVersion()).getString("uri");
+        lastItem.append(params.getQuery()).append("/").append(packageUri);
+        return utils.getLastUpdatedDate(lastItem.toString());
     }
 
     private String getPackageVersion() {
         return getVersionString(getLatestVersion());
     }
 
-    private Version getLatestVersion(){
+    private Version getLatestVersion() {
         return versionsList.get(0);
     }
 
-    private String getVersionString(Version version){
+    private String getVersionString(Version version) {
         return versionStringMap.get(version);
     }
 
-    private void populateVersionsList(){
+    private void populateVersionsList() {
 
         JSONArray versions = feedObject.getJSONArray("children");
 
         versionsList = new ArrayList<Version>();
 
-        versionStringMap = new HashMap<Version, String>() ;
+        versionStringMap = new HashMap<Version, String>();
         versionJSONObjectMap = new HashMap<Version, JSONObject>();
         for (int i = 0; i < versions.length(); i++) {
             JSONObject file = versions.getJSONObject(i);
             String fileName = file.getString("uri").substring(1);
             boolean isFolder = file.getBoolean("folder");
-            if(!fileName.startsWith(packageId) || isFolder)
-            {
+            if (!fileName.startsWith(packageId) || isFolder) {
                 continue;
             }
             int lastDot = fileName.lastIndexOf(".");
             LOGGER.info("lastDot index : " + lastDot);
             LOGGER.info("fileName  : " + fileName);
             LOGGER.info("packageId length : " + packageId.length());
-            String versionString  = fileName.substring(packageId.length() + 1, lastDot);
+            String versionString = fileName.substring(packageId.length() + 1, lastDot);
             LOGGER.info("versionString  : " + versionString);
             Version currentVersion = new Version(versionString);
-            if(isWithinBounds(currentVersion)) {
+            if (isWithinBounds(currentVersion)) {
                 LOGGER.info("is withing bounds  : " + currentVersion);
                 versionStringMap.put(currentVersion, versionString);
                 versionsList.add(currentVersion);
@@ -167,13 +133,13 @@ public class GenericArtifactoryFeedDocument {
     }
 
     private boolean isWithinBounds(Version currentVersion) {
-        if(lowerBoundVersion != null && lowerBoundVersion.compareTo(currentVersion) > 0 ){
+        if (lowerBoundVersion != null && lowerBoundVersion.compareTo(currentVersion) > 0) {
             return false;
         }
-        if(upperBoundVersion != null && upperBoundVersion.compareTo(currentVersion) <= 0 ){
+        if (upperBoundVersion != null && upperBoundVersion.compareTo(currentVersion) <= 0) {
             return false;
         }
-        if(lastKnownVersion != null &&  lastKnownVersion.compareTo(currentVersion) >=0  ){
+        if (lastKnownVersion != null && lastKnownVersion.compareTo(currentVersion) >= 0) {
             return false;
         }
         return true;
@@ -181,8 +147,8 @@ public class GenericArtifactoryFeedDocument {
 
     public PackageRevision getPackageRevision(boolean lastVersionKnown) {
 
-        if(versionsList.isEmpty()){
-            if(lastVersionKnown) return null;
+        if (versionsList.isEmpty()) {
+            if (lastVersionKnown) return null;
             else throw new GenericArtifactoryException("No such package found");
         }
         PackageRevision result = new PackageRevision(getPackageLabel(), getPublishedDate(), getAuthor());
